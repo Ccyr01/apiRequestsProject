@@ -87,7 +87,7 @@ header h1 {
     padding: 10px;
     background: rgba(245, 245, 245, 0.9);
     border-radius: 0.25em;
-    border: 100px solid rgba(44, 157, 213, 0.3);
+    border: 2px solid rgba(44, 157, 213, 0.3);
     transition: .4s ease-out;
     overflow: hidden;
 }

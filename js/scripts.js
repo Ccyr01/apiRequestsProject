@@ -24,50 +24,133 @@ submitInput.setAttribute('class', 'search-submit');
 searchContainer.appendChild(form);
 form.appendChild(inputSearch);
 
+
+
 const gallery = document.getElementById('gallery');
 //fetch from api
-fetch('https://randomuser.me/api/')
-//first .then promise has to be on same line to 
-//implicitly return response.json() 
-    .then(response => response.json())
-    .then(data => generateImage(data.results));
+for(let i = 0; i < 12; i++){
+    fetch('https://randomuser.me/api/')
+    //first .then promise has to be on same line to 
+    //implicitly return response.json() 
+        .then(response => response.json())
+        .then(data => {
+            generateImage(data)
+            
+        });
+}
+displayFirstCard();
 
 
 // generate Image with template
 function generateImage(data){
+    const person = data.results[0]
+    const picture = person.picture.thumbnail;
+    const firstName = person.name.first;
+    const lastName = person.name.last;
+    const email = person.email;
+    const city = person.location.city;
+    const state = person.location.state;
+
+    
+
 //inserting placeholder for card with template and beforeend
     let html = `<div class="card">
     <div class="card-img-container">
-        <img class="card-img" src=${data.picture} alt="profile picture">
+        <img class="card-img" src=${picture} alt="profile picture">
     </div>
     <div class="card-info-container">
-        <h3 id="name" class="card-name cap">first last</h3>
-        <p class="card-text">email</p>
-        <p class="card-text cap">city, state</p>
+        <h3 id="name" class="card-name cap">${firstName} ${lastName}</h3>
+        <p class="card-text">${email}</p>
+        <p class="card-text cap">${city}, ${state}</p>
     </div>
     </div>`;
 gallery.insertAdjacentHTML('beforeend',html);
 }
 
-// html = `<div class="modal-container">
-// <div class="modal">
-//     <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
-//     <div class="modal-info-container">
-//         <img class="modal-img" src="https://placehold.it/125x125" alt="profile picture">
-//         <h3 id="name" class="modal-name cap">name</h3>
-//         <p class="modal-text">email</p>
-//         <p class="modal-text cap">city</p>
-//         <hr>
-//         <p class="modal-text">(555) 555-5555</p>
-//         <p class="modal-text">123 Portland Ave., Portland, OR 97204</p>
-//         <p class="modal-text">Birthday: 10/21/2015</p>
-//     </div>
-// </div>
+//listen for event on card class
+//when clicked it should display 
+//the modal of that particular person
+const cards = document.querySelectorAll('.card');
+// const modal = document.querySelector('.modal-container');
+cards.forEach(card => {
+    card.addEventListener("click", () => {
+        displayCard();    
+    })
 
-// <div class="modal-btn-container">
-//     <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
-//     <button type="button" id="modal-next" class="modal-next btn">Next</button>
-// </div>
-// </div>`;
+})
+
+function displayFirstCard(){
+    html = `<div class="modal-container" display = 'none'>
+        <div class="modal">
+            <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+            <div class="modal-info-container">
+                <img class="modal-img" src="https://placehold.it/125x125" alt="profile picture">
+                <h3 id="name" class="modal-name cap">name</h3>
+                <p class="modal-text">email</p>
+                <p class="modal-text cap">city</p>
+                <hr>
+                <p class="modal-text">(555) 555-5555</p>
+                <p class="modal-text">123 Portland Ave., Portland, OR 97204</p>
+                <p class="modal-text">Birthday: 10/21/2015</p>
+            </div>
+        </div>
+
+        <div class="modal-btn-container">
+            <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+            <button type="button" id="modal-next" class="modal-next btn">Next</button>
+        </div>
+        </div>`;
+        const body = document.querySelector('body');
+        body.insertAdjacentHTML('beforeend',html);
+      }
+const modal = document.querySelector('.modal');
+modal.display = 'none';  
+// function displayCard(){
+//     html = `<div class="modal-container">
+//         <div class="modal">
+//             <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+//             <div class="modal-info-container">
+//                 <img class="modal-img" src="https://placehold.it/125x125" alt="profile picture">
+//                 <h3 id="name" class="modal-name cap">name</h3>
+//                 <p class="modal-text">email</p>
+//                 <p class="modal-text cap">city</p>
+//                 <hr>
+//                 <p class="modal-text">(555) 555-5555</p>
+//                 <p class="modal-text">123 Portland Ave., Portland, OR 97204</p>
+//                 <p class="modal-text">Birthday: 10/21/2015</p>
+//             </div>
+//         </div>
+
+//         <div class="modal-btn-container">
+//             <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+//             <button type="button" id="modal-next" class="modal-next btn">Next</button>
+//         </div>
+//         </div>`;
+//         const body = document.querySelector('body');
+//         body.insertAdjacentHTML('beforeend',html);
+            
+// }
+
+html = `<div class="modal-container">
+<div class="modal">
+    <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+    <div class="modal-info-container">
+        <img class="modal-img" src="https://placehold.it/125x125" alt="profile picture">
+        <h3 id="name" class="modal-name cap">name</h3>
+        <p class="modal-text">email</p>
+        <p class="modal-text cap">city</p>
+        <hr>
+        <p class="modal-text">(555) 555-5555</p>
+        <p class="modal-text">123 Portland Ave., Portland, OR 97204</p>
+        <p class="modal-text">Birthday: 10/21/2015</p>
+    </div>
+</div>
+
+<div class="modal-btn-container">
+    <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+    <button type="button" id="modal-next" class="modal-next btn">Next</button>
+</div>
+</div>`;
 const body = document.querySelector('body');
-// body.insertAdjacentHTML('beforeend',html);
+body.insertAdjacentHTML('beforeend',html);
+modal.display = 'none';
