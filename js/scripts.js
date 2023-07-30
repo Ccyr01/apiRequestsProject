@@ -19,7 +19,7 @@ submitInput.setAttribute('type', 'submit');
 submitInput.setAttribute('value', '&#x1F50D');
 submitInput.setAttribute('value', 'search-submit');
 submitInput.setAttribute('class', 'search-submit');
-
+let html;
 //appending the elements
 searchContainer.appendChild(form);
 form.appendChild(inputSearch);
@@ -36,9 +36,24 @@ for(let i = 0; i < 12; i++){
         .then(data => {
             generateImage(data)
             
-        });
+        })
+        .finally(() => {
+            //have to check if the images have\
+            // been generated before adding eventListeners
+            if(i === 11){
+                //listen for event on card class
+                //when clicked it should display 
+                //the modal of that particular person
+                const cards = document.querySelectorAll('.card');
+                cards.forEach(card => {
+                    card.addEventListener("click", () => {
+                        console.log('clicked');
+                        displayCard();                           
+                    })
+                })
+            }
+        })
 }
-displayFirstCard();
 
 
 // generate Image with template
@@ -50,11 +65,8 @@ function generateImage(data){
     const email = person.email;
     const city = person.location.city;
     const state = person.location.state;
-
-    
-
 //inserting placeholder for card with template and beforeend
-    let html = `<div class="card">
+    html = `<div class="card">
     <div class="card-img-container">
         <img class="card-img" src=${picture} alt="profile picture">
     </div>
@@ -67,20 +79,9 @@ function generateImage(data){
 gallery.insertAdjacentHTML('beforeend',html);
 }
 
-//listen for event on card class
-//when clicked it should display 
-//the modal of that particular person
-const cards = document.querySelectorAll('.card');
-// const modal = document.querySelector('.modal-container');
-cards.forEach(card => {
-    card.addEventListener("click", () => {
-        displayCard();    
-    })
-
-})
-
-function displayFirstCard(){
-    html = `<div class="modal-container" display = 'none'>
+//displayCard function displays a card when one of them has been clicked
+function displayCard(){
+    html = `<div class="modal-container">
         <div class="modal">
             <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
             <div class="modal-info-container">
@@ -102,55 +103,12 @@ function displayFirstCard(){
         </div>`;
         const body = document.querySelector('body');
         body.insertAdjacentHTML('beforeend',html);
-      }
-const modal = document.querySelector('.modal');
-modal.display = 'none';  
-// function displayCard(){
-//     html = `<div class="modal-container">
-//         <div class="modal">
-//             <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
-//             <div class="modal-info-container">
-//                 <img class="modal-img" src="https://placehold.it/125x125" alt="profile picture">
-//                 <h3 id="name" class="modal-name cap">name</h3>
-//                 <p class="modal-text">email</p>
-//                 <p class="modal-text cap">city</p>
-//                 <hr>
-//                 <p class="modal-text">(555) 555-5555</p>
-//                 <p class="modal-text">123 Portland Ave., Portland, OR 97204</p>
-//                 <p class="modal-text">Birthday: 10/21/2015</p>
-//             </div>
-//         </div>
-
-//         <div class="modal-btn-container">
-//             <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
-//             <button type="button" id="modal-next" class="modal-next btn">Next</button>
-//         </div>
-//         </div>`;
-//         const body = document.querySelector('body');
-//         body.insertAdjacentHTML('beforeend',html);
-            
-// }
-
-html = `<div class="modal-container">
-<div class="modal">
-    <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
-    <div class="modal-info-container">
-        <img class="modal-img" src="https://placehold.it/125x125" alt="profile picture">
-        <h3 id="name" class="modal-name cap">name</h3>
-        <p class="modal-text">email</p>
-        <p class="modal-text cap">city</p>
-        <hr>
-        <p class="modal-text">(555) 555-5555</p>
-        <p class="modal-text">123 Portland Ave., Portland, OR 97204</p>
-        <p class="modal-text">Birthday: 10/21/2015</p>
-    </div>
-</div>
-
-<div class="modal-btn-container">
-    <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
-    <button type="button" id="modal-next" class="modal-next btn">Next</button>
-</div>
-</div>`;
+        const modal = document.querySelector('.modal-container');
+        modal.style.display = 'block';        
+        const modalCloseButton = document.getElementById('modal-close-btn');
+        modalCloseButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+}
 const body = document.querySelector('body');
 body.insertAdjacentHTML('beforeend',html);
-modal.display = 'none';
