@@ -1,5 +1,10 @@
-const searchContainer = document.querySelector('.search-container');
+/*
+    Christian C.
+    7/31/2023
+*/
 
+
+const searchContainer = document.querySelector('.search-container');
 //creating a form to append to dom
 // <form action="#" method="get">
 //     <input type="search" id="search-input" class="search-input" placeholder="Search...">
@@ -42,6 +47,18 @@ fetch('https://randomuser.me/api/?nat=us&results=12')
     .then(data => {
         peopleArray = data.results;
         generateImage(peopleArray);
+        const searchInput = document.querySelector('#search-input');
+        const namesToSearch = document.querySelectorAll('h3');
+        // const names = namesToSearch.forEach(h3 => {
+        //     console.log(h3.textContent);
+        // })
+        const names = Array.from(namesToSearch);
+        searchInput.addEventListener('keyup', () => {
+
+            // search bar 
+            searchFunc(searchInput, names);
+            console.log('Keyup event on the Search input is functional!');
+        });
         
     })
     .catch((error) => {
@@ -60,7 +77,7 @@ fetch('https://randomuser.me/api/?nat=us&results=12')
         
     })
 
-
+// Map to be able to get initials of the state
     const statesInitials = {
         'Alabama': 'AL',
         'Alaska': 'AK',
@@ -123,7 +140,6 @@ fetch('https://randomuser.me/api/?nat=us&results=12')
         'Wisconsin': 'WI',
         'Wyoming': 'WY',
     };
-
 
 // generate Image with template
 function generateImage(peopleArray){
@@ -217,3 +233,35 @@ function displayCard(person){
 }
 const body = document.querySelector('body');
 body.insertAdjacentHTML('beforeend',html);
+
+
+function searchFunc(searchInput, names){
+    // If search bar is empty bring back original page
+    // with all users visible 
+    
+    if(searchInput.value === ""){
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.classList.remove('hide');
+
+        });
+        names.forEach(name => {
+            name.classList.remove('match');
+        })
+        return;
+    }
+    //Loop over the names looking for match and 
+    // style appropriately
+    for(let i = 0; i < names.length; i++){  
+      names[i].classList.remove('match');
+        if(searchInput.value.length != 0 && names[i].textContent.toLowerCase().includes(searchInput.value.toLowerCase()) ){
+            names[i].classList.add('match');
+            names[i].closest('.card').classList.remove('hide');
+        }
+        else{
+            names[i].classList.remove('match');
+            names[i].closest('.card').classList.add('hide');
+
+        }
+    }
+  }

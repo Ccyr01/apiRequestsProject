@@ -116,6 +116,15 @@ header h1 {
 .cap {
     text-transform: capitalize;
 }
+.match {
+    color: white;
+    background: rgb(59, 153, 59);
+    border: 2px solid rgba(27, 77, 14, 0.9);
+    box-shadow: 1px 1px 5px rgba(50, 50, 50, 0.7);
+}
+.hide{
+    display: none;
+}
 
 
 /* ===================================== 
