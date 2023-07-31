@@ -30,44 +30,36 @@ const gallery = document.getElementById('gallery');
 let dataFetched;
 let peopleArray = [];
 //fetch from api
-for(let i = 0; i < 12; i++){
-    fetch('https://randomuser.me/api/?nat=us')
-    //first .then promise has to be on same line to 
-    //implicitly return response.json() 
-        .then(response => response.json())
-        .then(data => {
-            dataFetched = data.results[0];
-            // console.log(dataFetched);
-            peopleArray.push(dataFetched);
-            // console.log(peopleArray);
-            generateImage(data)
-            
+fetch('https://randomuser.me/api/?nat=us&results=12')
+    .then(response => {
+        if(response.ok){
+            return response.json();
+        }
+        else{
+            console.error('error in fetch request');
+        }
+    })
+    .then(data => {
+        peopleArray = data.results;
+        generateImage(peopleArray);
+        
+    })
+    .catch((error) => {
+        console.error('unable to fetch error', error);
+    })
+    .finally(() => {
+        //listen for event on card class
+        //when clicked it should display 
+        //the modal of that particular person
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.addEventListener("click", () => {
+                displayCard(peopleArray[index]);                           
+            })
         })
-        .catch((error) => {
-            console.log(error,'unable to fetch error');
-        })
-        .finally(() => {
-            //have to check if the images have\
-            // been generated before adding eventListeners
-            if(i === 11){
-                //listen for event on card class
-                //when clicked it should display 
-                //the modal of that particular person
-                const cards = document.querySelectorAll('.card');
-                
-                cards.forEach((card, index) => {
-                    
-                    card.addEventListener("click", () => {
-                        
-                        
-                        // // console.log(cardImage);
-                        // console.log(name+'\n' + city+'\n'+ email +' clicked');
-                        displayCard(peopleArray[index]);                           
-                    })
-                })
-            }
-        })
-}
+        
+    })
+
 
     const statesInitials = {
         'Alabama': 'AL',
@@ -134,38 +126,40 @@ for(let i = 0; i < 12; i++){
 
 
 // generate Image with template
-function generateImage(data){
-    const person = data.results[0]
-    const picture = person.picture.thumbnail;
-    const firstName = person.name.first;
-    const lastName = person.name.last;
-    const email = person.email;
-    const city = person.location.city;
-    const state = person.location.state;
-//inserting user html with user info beforeend of gallery
-    html = `<div class="card">
-    <div class="card-img-container">
-        <img class="card-img" src=${picture} alt="profile picture">
-    </div>
-    <div class="card-info-container">
-        <h3 id="name" class="card-name cap">${firstName} ${lastName}</h3>
-        <p class="card-text">${email}</p>
-        <p class="card-text cap">${city}, ${state}</p>
-    </div>
-    </div>`;
-gallery.insertAdjacentHTML('beforeend',html);
+function generateImage(peopleArray){
+    peopleArray.forEach(person => {
+        const picture = person.picture.thumbnail;
+        const firstName = person.name.first;
+        const lastName = person.name.last;
+        const email = person.email;
+        const city = person.location.city;
+        const state = person.location.state;
+    //inserting user html with user info beforeend of gallery
+        html = `<div class="card">
+        <div class="card-img-container">
+            <img class="card-img" src=${picture} alt="profile picture">
+        </div>
+        <div class="card-info-container">
+            <h3 id="name" class="card-name cap">${firstName} ${lastName}</h3>
+            <p class="card-text">${email}</p>
+            <p class="card-text cap">${city}, ${state}</p>
+        </div>
+        </div>`;
+    gallery.insertAdjacentHTML('beforeend',html);
+    });
 }
+
+
+//sed modalContainer to null to avoid errors in if statement
 let modalContainer = null;
 //displayCard function displays a card when one of them has been clicked
+// the paramater passed is the data from the person of the card clicked
 function displayCard(person){
     if(modalContainer){
         modalContainer.remove();
     }
-    // let name = card.querySelector('.card-name').textContent;
-    // let email = card.querySelector(".card-text").textContent; 
-    // let city = card.querySelector(".card-text.cap").textContent;
-    // let cardImage = card.querySelector('.card-img').src;
-    console.log(person);
+
+    // Access all user's details to assign in template
     let cardImage = person.picture.thumbnail;
     let firstName = person.name.first;
     let lastName = person.name.last;
@@ -175,6 +169,7 @@ function displayCard(person){
     let streetName = person.location.street.name;
     let city = person.location.city;
     let state = person.location.state;
+    //arrow function that returns the initials of the state passed
     let stateAbbreviated = (state) => {
         let stateCleaned = state.trim();
         return statesInitials[stateCleaned] || "N/A";
@@ -190,9 +185,6 @@ function displayCard(person){
     let phoneRegex = /\d+/g;
     let phone = (person.cell).match(phoneRegex)?.join('') || ('');
     let formattedPhone = `(${phone.slice(0,3)}) ${phone.slice(3,6)}-${phone.slice(6,10)}`
-    
-
-
 
     html = `<div class="modal-container">
         <div class="modal">
