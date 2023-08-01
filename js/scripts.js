@@ -231,9 +231,6 @@ function displayCard(person){
             modalContainer.remove();
         });
 }
-const body = document.querySelector('body');
-body.insertAdjacentHTML('beforeend',html);
-
 
 function searchFunc(searchInput, names){
     // If search bar is empty bring back original page
